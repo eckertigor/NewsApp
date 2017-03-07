@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">NewsApp</string>
+    <string name="btn_update">Обновить</string>
+    <string name="btn_on_bg_update">Обновлять в фоне</string>
+    <string name="btn_off_bg_update">Не обновлять в фоне</string>
+    <string name="btn_settings">Настройки</string>
+    <string name="topic1">auto</string>
+    <string name="topic2">it</string>
+    <string name="topic3">health</string>
+</resources>
