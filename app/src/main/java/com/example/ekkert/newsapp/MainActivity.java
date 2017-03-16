@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_on_bg_update).setOnClickListener(onBgUpdateClick);
         findViewById(R.id.btn_off_bg_update).setOnClickListener(offBgUpdateClick);
         findViewById(R.id.btn_settings).setOnClickListener(onSettingsClick);
-        if (Storage.getInstance(MainActivity.this).loadCurrentTopic() == null) {
+        if (Storage.getInstance(MainActivity.this).loadCurrentTopic().equals("")) {
             Storage.getInstance(MainActivity.this).saveCurrentTopic(Topics.AUTO);
         }
     }
@@ -77,7 +77,12 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                printNews();
+                if (intent.getAction().equals(MainActivity.ACTION_NEW_NEWS)) {
+                    printNews();
+                }
+                if (intent.getAction().equals(MainActivity.ACTION_ERROR)) {
+                    printError();
+                }
             }
         };
         IntentFilter intentFilter = new IntentFilter();
@@ -108,17 +113,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void printNews() {
         News news = Storage.getInstance(this).getLastSavedNews();
-        String newsTitle = news.getTitle();
-        String newsText = news.getBody();
+        String newsTitle;
+        String newsText;
+        Long newsDate;
         if (news == null) {
             newsTitle = "error";
             newsText = "error";
+            newsDate = 0L;
+        } else {
+            newsTitle = news.getTitle();
+            newsText = news.getBody();
+            newsDate = news.getDate();
         }
         ((TextView) findViewById(R.id.news_title)).setText(newsTitle);
         ((TextView) findViewById(R.id.news_text)).setText(newsText);
-        ((TextView) findViewById(R.id.news_date)).setText(getDate(news.getDate()));
+        ((TextView) findViewById(R.id.news_date)).setText(getDate(newsDate));
 
     }
+
+     private void printError() {
+        ((TextView) findViewById(R.id.news_title)).setText("error");
+        ((TextView) findViewById(R.id.news_text)).setText("error");
+        ((TextView) findViewById(R.id.news_date)).setText(getDate(0L));
+        }
 
     private void setUpdateInBg(boolean isUpdateInBgOn) {
         if (MainActivity.updateInBg != isUpdateInBgOn) {
